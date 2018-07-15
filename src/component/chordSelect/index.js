@@ -3,6 +3,27 @@ import React, {
 } from 'react';
 import './index.css';
 import loading from './bars.svg';
+import { withStyles } from '@material-ui/core/styles';
+
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+const styles = theme => ({
+    root: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    formControl: {
+        margin: theme.spacing.unit,
+        minWidth: 120,
+    },
+    selectEmpty: {
+        marginTop: theme.spacing.unit * 2,
+    },
+});
 class ChordSelect extends Component {
 	constructor(props) {
 		super(props);
@@ -74,50 +95,54 @@ class ChordSelect extends Component {
 		this.keyBarX = this.state[keyBarName];
 		this.setState(_state);
 	}
-	touchEnd(index) {
-		let _state = {};
+	touchEnd(index,value) {
+		let _state = {
+
+		};
+		let oldChord=this.state.chordTone;
+        oldChord[index]=value;
+		let newChord=oldChord;
+		_state.chordTone=newChord;
 		_state["keyBarShow" + (index + 1)] = false;
 		_state.loading = true;
 		this.setState(_state);
+
 		this.props.selectFinish(this.state.chordTone);
 	}
-	mouseDown(index, e) {
-		if (this.isMobile()) return;
-		this.isMouseDown = true;
-		this.touchStart(index, e.pageX);
-	}
-	mouseUp(index, e) {
-		if (this.isMobile()) return;
-		this.isMouseDown = false;
-		this.touchEnd(index);
-	}
-	mouseMove(index, e) {
-		if (this.isMobile() || !this.isMouseDown) return;
-		this.touchMove(index, e.pageX);
-	}
-	mouseLeave(index, e) {
-		if (this.isMobile() || !this.isMouseDown) return;
-		this.isMouseDown = false;
-		this.touchEnd(index);
+    handleChange(event) {
+		console.log(event)
+        console.log(event.target.value)
+		let inputName=event.target.name;
+		let index = inputName.slice(inputName.length-1,inputName.length)
+        this.touchEnd(parseInt(index),event.target.value);
 	}
 	createSelect() {
+        const { classes } = this.props;
 		return (
+
 			<div className="key-select">
 				{this.state.chordTone.map((key, i)=>{
 					let flag = i+1;
 					return (
-						<div key={"reactkey_"+i} id={"key"+flag} className="key-num square" 
-							onTouchStart={this.touchStart.bind(this,i)} 
-							onTouchMove={this.touchMove.bind(this,i)} 
-							onTouchEnd={this.touchEnd.bind(this,i)}
-							onMouseDown={this.mouseDown.bind(this,i)}
-							onMouseUp={this.mouseUp.bind(this,i)}
-							onMouseMove={this.mouseMove.bind(this,i)}
-							onMouseLeave={this.mouseLeave.bind(this,i)}
-							>
-							<span className="noselect">{key}</span>
-							<div className={"key-bar" + (this.state["keyBarShow"+flag] ? " keybar-show" : "")} style={{left:this.state["keyBar"+flag]+"px"}}></div>
-						</div>
+                        <FormControl key={'thekey_'+i} className={classes.formControl}>
+							<div>
+
+							</div>
+                            <InputLabel htmlFor="age-helper">Age</InputLabel>
+                            <Select
+                                value={this.state.chordTone[i]}
+                                onChange={this.handleChange.bind(this)}
+                                input={<Input name={'chordTone'+i} />}
+                            >
+
+								{this.keyMap.map((keyName,index)=>{
+									return (
+                                        <MenuItem value={keyName}>{keyName}</MenuItem>
+										)
+								})}
+                            </Select>
+                            <FormHelperText>选择和弦组成音</FormHelperText>
+                        </FormControl>
 					)
 				})}
 			</div>
@@ -141,18 +166,19 @@ class ChordSelect extends Component {
 		});
 	}
 	render() {
-		return (
+        const { classes } = this.props;
+
+        return (
 			<div className="container-chordSelect">
 				{this.createSelect()}
-				<div className="select-notify noselect">左右拖动可改变和弦组成音</div>
 				<div className="chord-count">
 					<div className={this.state.type === 3 ?"noselect active":"noselect"} onClick={this.chordCountChange.bind(this, 3)}>三音和弦</div>
 					<div className={this.state.type === 4 ?"noselect active":"noselect"} onClick={this.chordCountChange.bind(this, 4)}>四音和弦</div>
 				</div>
-				<div className={"loading-box"+(this.state.loading?" show":"")}><img src={loading} alt="" className="loading"/></div>
+				{/*<div className={"loading-box"+(this.state.loading?" show":"")}><img src={loading} alt="" className="loading"/></div>*/}
 			</div>
 		);
 	}
 }
 
-export default ChordSelect;
+export default withStyles(styles)(ChordSelect);

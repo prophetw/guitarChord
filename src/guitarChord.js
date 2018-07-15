@@ -79,7 +79,8 @@ class Tone {
 
 // 吉他和弦推导类
 class GuitarChord {
-	constructor() {
+	// key 什么调 key c   c 调
+	constructor(key) {
 		// 吉他的最大品格数
 		this.fretLength = 15;
 		// 构建1到6弦的初始音
@@ -101,6 +102,15 @@ class GuitarChord {
 			}
 		}
 	}
+    // 根据key 生成不同的 tone 比如 c调 362573
+    /*
+     * @param defaultCapo 默认0
+     */
+    calcTone(keyName) {
+
+	}
+
+
 	// 在指定的品格数范围内，查找某个音在某根弦的音域下所有的品格位置
 	/*
 	 * @param key 搜寻的音（字符串形式）
@@ -511,11 +521,11 @@ class ChordSvg {
 	}
 	// 设置禁止弹奏的叉号位置，位于几弦
 	setForbidden(svg, string = 6) {
-		svg.appendChild(this.createUse('#forbidden', 25 + 20 * (6 - string), 30));
+		svg.appendChild(this.createUse('#forbidden', 25 + 20 * (6 - string), 35));
 	}
 	// 设置空弦弹奏的空心圈位置，位于几弦
 	setOpen(svg, string = 6) {
-		svg.appendChild(this.createUse('#blank_circle', 25 + 20 * (6 - string), 30));
+		svg.appendChild(this.createUse('#blank_circle', 25 + 20 * (6 - string), 35));
 	}
 	// 设置指法按弦位置，几弦几品
 	setFinger(svg, string = 6, fret = 0) {
@@ -582,14 +592,12 @@ class ChordSvg {
 		this.chordRect = this.createSVG('rect', {
 			className: 'chord-rect',
 			x: 25,
-			y: 45,
-			rx: 5,
-			ry: 5
+			y: 45
 		});
 		// 和弦网格，代表弦和品
 		this.chordGird = this.createSVG('path', {
 			className: 'chord-gird',
-			d: 'M25 65 L125 65 M25 85 L125 85 M25 105 L125 105 M25 125 L125 125 M45 45 L45 145 M65 45 L65 145 M85 45 L85 145 M105 45 L105 145 M25 40 L125 40'
+			d: 'M25 65 L125 65 M25 85 L125 85 M25 105 L125 105 M25 125 L125 125 M45 45 L45 145 M65 45 L65 145 M85 45 L85 145 M105 45 L105 145 M25 40'
 		});
 		// 用于放置可复用的svg元素
 		this.defs = this.createSVG('defs');

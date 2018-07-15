@@ -13,7 +13,7 @@ class App extends Component {
 		}
 	}
 	hideLoading() {
-		this.refs.chordSelect.hideLoading();
+		// this.refs.chordSelect.hideLoading();
 	}
 	selectFinish(chordTone) {
 		this.refs.chordDraw.draw(chordTone);
