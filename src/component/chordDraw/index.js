@@ -82,7 +82,10 @@ class ChordDraw extends Component {
 		return arr[Math.floor(Math.random() * arr.length)];
 	}
 	draw(chordTone) {
-		let chord = new GuitarChord();
+		console.log('=======hello props')
+        console.log(this.state)
+		console.log(this.props);
+		let chord = new GuitarChord(this.props.mainKey);
 		let chordName = new ChordName().getChordName(chordTone);
 		let chordResult = chord.chord(chordTone);
 		let svg = new ChordSvg();

@@ -41,6 +41,7 @@ class ChordSelect extends Component {
 			keyBarShow4: false,
 			loading: false
 		}
+        this.updateChord = this.updateChord.bind(this);
 	}
 	isArray(data) {
 		return Object.prototype.toString.call(data) === '[object Array]';
@@ -95,6 +96,9 @@ class ChordSelect extends Component {
 		this.keyBarX = this.state[keyBarName];
 		this.setState(_state);
 	}
+	updateChord(){
+        this.props.selectFinish(this.state.chordTone);
+	}
 	touchEnd(index,value) {
 		let _state = {
 
@@ -107,7 +111,7 @@ class ChordSelect extends Component {
 		_state.loading = true;
 		this.setState(_state);
 
-		this.props.selectFinish(this.state.chordTone);
+		this.updateChord();
 	}
     handleChange(event) {
 		console.log(event)
@@ -124,11 +128,16 @@ class ChordSelect extends Component {
 				{this.state.chordTone.map((key, i)=>{
 					let flag = i+1;
 					return (
-                        <FormControl key={'thekey_'+i} className={classes.formControl}>
+                        <FormControl key={'thekey_'+i}>
 							<div>
 
 							</div>
-                            <InputLabel htmlFor="age-helper">Age</InputLabel>
+                            <InputLabel htmlFor="age-helper">
+								{ i===0 && '根音' }
+                                { i===1 && '3度音' }
+                                { i===2 && '5度音' }
+                                { i===3 && '7度音' }
+							</InputLabel>
                             <Select
                                 value={this.state.chordTone[i]}
                                 onChange={this.handleChange.bind(this)}
@@ -137,7 +146,7 @@ class ChordSelect extends Component {
 
 								{this.keyMap.map((keyName,index)=>{
 									return (
-                                        <MenuItem value={keyName}>{keyName}</MenuItem>
+                                        <MenuItem key={'key'+index} value={keyName}>{keyName}</MenuItem>
 										)
 								})}
                             </Select>
@@ -181,4 +190,4 @@ class ChordSelect extends Component {
 	}
 }
 
-export default withStyles(styles)(ChordSelect);
+export default ChordSelect;

@@ -10,9 +10,10 @@ class Tone {
 	constructor(toneString = '1', string, fret) {
 		this.syllableMap = ['do', 're', 'mi', 'fa', 'sol', 'la', 'si']; // 所有唱名数组
 		this.keyMap = ['1', ['#1', 'b2'], '2', ['#2', 'b3'], '3', '4', ['#4', 'b5'], '5', ['#5', 'b6'], '6', ['#6', 'b7'], '7']; // 音程
-		this.intervalMap = ['C', ['#C', 'bD'], 'D', ['#D', 'bE'], 'E', 'F', ['#F', 'bG'], 'G', ['#G', 'bA'], 'A', ['#A', 'bB'], 'B']; //所有调名
+		// this.intervalMap = ['C', ['#C', 'bD'], 'D', ['#D', 'bE'], 'E', 'F', ['#F', 'bG'], 'G', ['#G', 'bA'], 'A', ['#A', 'bB'], 'B']; //所有调名
+        this.intervalMap = ['1', ['#1', 'b2'], '2', ['#2', 'b3'], '3', '4', ['#4', 'b5'], '5', ['#5', 'b6'], '6', ['#6', 'b7'], '7'];  //所有调名
 		this.toneString = toneString; // 单音的字符串表示
-		this.toneNormal = toneString.replace(/\./g, ''); // 单音的字符串表示（去除八度标记）
+		this.toneNormal = toneString.replace(/(\.)*/g, ''); // 单音的字符串表示（去除八度标记）
 		this.key = toneString.replace(/\.|b|#/g, ''); // 数字音
 		this.syllableName = this.syllableMap[+this.key - 1]; // 唱名
 		this.flat = toneString.match('b') ? 'b' : ''; // 降半调标记
@@ -80,18 +81,11 @@ class Tone {
 // 吉他和弦推导类
 class GuitarChord {
 	// key 什么调 key c   c 调
-	constructor(key) {
+	constructor(mainKey) {
 		// 吉他的最大品格数
 		this.fretLength = 15;
 		// 构建1到6弦的初始音
-		this.initialTone = [
-			new Tone('3.', 1, 0),
-			new Tone('7', 2, 0),
-			new Tone('5', 3, 0),
-			new Tone('2', 4, 0),
-			new Tone('.6', 5, 0),
-			new Tone('.3', 6, 0)
-		];
+		this.initialTone = this.initialToneFrom(mainKey);
 		// 用于吉他上所有位置对应的音
 		this.toneMap = [];
 		// 从1到6弦，从品数的低到高，依次计算每个位置的音
@@ -104,10 +98,87 @@ class GuitarChord {
 	}
     // 根据key 生成不同的 tone 比如 c调 362573
     /*
-     * @param defaultCapo 默认0
+     * @param keyName 默认C   C D E F G A B
      */
-    calcTone(keyName) {
+    initialToneFrom(mainKey) {
+		let arr=[]
+		console.log('====now mainKey: ',mainKey)
+    	switch (mainKey) {
+			case 'C':
+                arr=[new Tone('3.', 1, 0),
+                    new Tone('7', 2, 0),
+                    new Tone('5', 3, 0),
+                    new Tone('2', 4, 0),
+                    new Tone('.6', 5, 0),
+                    new Tone('.3', 6, 0)]
+				break;
+			case 'D':
+                arr=[new Tone('2.', 1, 0),
+                    new Tone('6', 2, 0),
+                    new Tone('4', 3, 0),
+                    new Tone('1', 4, 0),
+                    new Tone('.5', 5, 0),
+                    new Tone('.2', 6, 0)]
+                break;
+            case 'E':
+                arr=[new Tone('1.', 1, 0),
+                    new Tone('5', 2, 0),
+                    new Tone('b3', 3, 0),
+                    new Tone('b7', 4, 0),
+                    new Tone('.4', 5, 0),
+                    new Tone('.1', 6, 0)]
+                break;
+            case 'F':
+                arr=[new Tone('7.', 1, 0),
+                    new Tone('#4', 2, 0),
+                    new Tone('2', 3, 0),
+                    new Tone('6', 4, 0),
+                    new Tone('.3', 5, 0),
+                    new Tone('..7', 6, 0)]
+                break;
+            case 'G':
+                arr=[new Tone('6', 1, 0),
+                    new Tone('3', 2, 0),
+                    new Tone('1', 3, 0),
+                    new Tone('.5', 4, 0),
+                    new Tone('.2', 5, 0),
+                    new Tone('..6', 6, 0)]
+                break;
+            case '#G':
+                arr=[new Tone('#5', 1, 0),
+                    new Tone('#2', 2, 0),
+                    new Tone('.7', 3, 0),
+                    new Tone('#4', 4, 0),
+                    new Tone('#1', 5, 0),
+                    new Tone('#5', 6, 0)]
+                break;
+            case 'A':
+                arr=[new Tone('5', 1, 0),
+                    new Tone('2', 2, 0),
+                    new Tone('b7', 3, 0),
+                    new Tone('.4', 4, 0),
+                    new Tone('.1', 5, 0),
+                    new Tone('.5', 6, 0)]
+                break;
+            case 'B':
+                arr=[new Tone('4', 1, 0),
+                    new Tone('1', 2, 0),
+                    new Tone('#5', 3, 0),
+                    new Tone('#2', 4, 0),
+                    new Tone('#6', 5, 0),
+                    new Tone('.4', 6, 0)]
+                break;
+			default:
+                arr=[new Tone('3.', 1, 0),
+                    new Tone('7', 2, 0),
+                    new Tone('5', 3, 0),
+                    new Tone('2', 4, 0),
+                    new Tone('.6', 5, 0),
+                    new Tone('.3', 6, 0)]
+                break;
 
+		}
+		return arr;
 	}
 
 
