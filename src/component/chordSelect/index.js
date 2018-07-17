@@ -168,6 +168,9 @@ class ChordSelect extends Component {
 				keyBar4: 0
 			});
 		}
+		this.forceUpdate(()=>{
+			this.updateChord()
+		})
 	}
 	hideLoading() {
 		this.setState({
